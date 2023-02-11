@@ -5,6 +5,28 @@ services:
     restart: always
     command: >
       sh -c "python manage.py migrate &&
-             python manage.py runserver"
+             python manage.py runserver 0.0.0.0:8000 &&
+             celery -A send_email worker -l info"
     ports:
       - "8000:8000"
+    healthcheck:
+      test: celery -A app.celery_app status
+      interval: 3s
+      timeout: 5s
+      retries: 10
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  redis:
+    image: redis:latest
+    env_file:
+      - .env
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+
+  celery:
+    image: celery:4
