@@ -62,7 +62,7 @@ def add_eta(request):
     else:
         form = TwoNumbersForm()
 
-    template = 'core/add.html'
+    template = 'core/add_eta.html'
     title = 'Отложенное сложение двух чисел'
     context = {
         'title': title,

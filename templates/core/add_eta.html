@@ -3,7 +3,7 @@
 {% block content %}
   {% load static %}
   <div class="container">
-    <h2>Сложить 2 числа</h2>
+    <h2>Отложенно сложить 2 числа</h2>
     <div class="container py-5">
       <div class="row justify-content-center">
         <div class="col-md-8 p-5">
@@ -25,7 +25,7 @@
                   {% endfor %}
                 {% endif %}
 
-                <form method="post" action="/add/">
+                <form method="post" action="/add_eta/">
                   {% csrf_token %}
 
                   {% for field in form %}
