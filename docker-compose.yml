@@ -27,7 +27,7 @@ services:
 
   flower:
     build: .
-    command: celery -A send_mail.celery_app flower --loglevel=DEBUG --port=9000
+    command: flower -A send_mail.celery_app --port=9000
     ports:
       - "9000:9000"
     depends_on:
