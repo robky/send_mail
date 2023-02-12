@@ -55,7 +55,7 @@ def add_eta(request):
         if form.is_valid():
             one = form.cleaned_data['one']
             two = form.cleaned_data['two']
-            tasks.add.delay((one, two), countdown=0.2 * 60)
+            tasks.add.apply_async((one, two), countdown=0.2 * 60)
             return HttpResponseRedirect('/done/')
 
     # if a GET (or any other method) we'll create a blank form
