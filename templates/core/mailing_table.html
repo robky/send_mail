@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock title %}
+{% block content %}
+  <div class="container py-5">
+    {% if mailings %}
+      <table class="table table-hover">
+        <thead>
+        <tr class="table-primary">
+          <th>Название</th>
+          <th>Управление</th>
+        </tr>
+        </thead>
+        {% for mailing in mailings %}
+          <tr>
+            <td>
+              <a href="{% url 'core:mailing_detail' mailing.id %}"
+              >{{ mailing.title }}</a>
+            </td>
+            <td>
+              <a class="btn btn-warning" href="{% url 'core:mailing_edit' mailing.id %}"
+              >Редактировать</a>
+              <a class="btn btn-primary" href="{% url 'core:mailing_users' mailing.id %}"
+              >Подписчики</a>
+              <a class="btn btn-success" href="{% url 'core:mailing_send_form' mailing.id %}"
+              >Разослать</a>
+              <a class="btn btn-danger" href="{% url 'core:mailing_delete' mailing.id %}"
+              >Удалить</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </table>
+    {% else %}
+      Рассылок нет
+    {% endif %}
+    <p>
+      <a class="btn btn-primary"
+         href="{% url 'core:mailing_create' %}">Создать новую рассылку</a></p>
+  </div>
+{% endblock content %}

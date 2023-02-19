@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock title %}
+{% block content %}
+  <div class="container py-5">
+    {% if subscribe %}
+      <table class="table table-hover">
+        <thead>
+        <tr class="table-primary">
+          <th>Имя</th>
+          <th>Фамилия</th>
+          <th>Почта</th>
+          <th>Управление</th>
+        </tr>
+        </thead>
+        {% for subscriber in subscribe %}
+          <tr>
+            <td>
+              <a href="{% url 'core:user_detail' subscriber.user.id %}"
+              >{{ subscriber.user.name }}</a>
+            </td>
+            <td> {{ subscriber.user.surname }} </td>
+            <td> {{ subscriber.user.mail }} </td>
+            <td>
+              <a class="btn btn-danger" href="{% url 'core:mailing_unsubscribe_user' mailing_id subscriber.user.id %}"
+              >Отписать</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </table>
+    {% else %}
+      <p>На рассылку никто не подписан.</p>
+    {% endif %}
+    <p>
+      <a class="btn btn-info"
+         href="{% url 'core:mailing_table' %}">Назад</a>
+      <a class="btn btn-primary"
+         href="{% url 'core:mailing_subscribe' mailing_id %}">Добавить подписчика</a></p>
+  </div>
+{% endblock content %}

@@ -1,0 +1,33 @@
+<nav class="navbar fixed-top navbar-expand-lg navbar-light"
+     style="background-color: lightskyblue">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'core:index' %}">
+      <span style="color:red">Send</span>Mail
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbar_collapse"
+            aria-controls="navbar_collapse" aria-expanded="false"
+            aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbar_collapse">
+      {% with request.resolver_match.view_name as view_name %}
+        <ul class="nav nav-pills mb-2 mb-lg-0 ms-auto">
+        <li class="nav-item">
+          <a class="nav-link {% if view_name  == 'core:mailing_table' %}active{% endif %}"
+             href="{% url 'core:mailing_table' %}">Рассылки</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if view_name  == 'core:info_table' %}active{% endif %}"
+             href="{% url 'core:info_table' %}">Журнал отправленных рассылок</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if view_name  == 'core:user_table' %}active{% endif %}"
+             href="{% url 'core:user_table' %}">Пользователи</a>
+        </li>
+      {% endwith %}
+      </ul>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock title %}
+{% block content %}
+  <div class="container py-5">
+    {% if info_stack %}
+      <table class="table table-hover">
+        <thead>
+        <tr class="table-primary">
+          <th>Название рассылки</th>
+          <th>Дата задания</th>
+          <th>Отслеживание открытий писем</th>
+        </tr>
+        </thead>
+        {% for info in info_stack %}
+          <tr>
+            <td>
+              <a href="{% url 'core:journal_table' info.id %}"
+              >{{ info.mailing }}</a>
+            </td>
+          <td> {{ info.created }} </td>
+          <td>
+              <a class="btn btn-primary" href="{% url 'core:journal_table' info.id %}"
+              >Отслеживание</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </table>
+    {% else %}
+      Пока не было рассылок. Информация появиться после отправки рассылки.
+    {% endif %}
+  </div>
+{% endblock content %}

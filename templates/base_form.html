@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  {% include 'includes/head.html' %}
+  <title>
+    {% block title %}{% endblock title %}
+  </title>
+</head>
+<body>
+<header>
+  {% include 'includes/header.html' %}
+</header>
+<main>
+  {% load user_filters %}
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="p-5">
+        <div class="card">
+          <div class="card-header">
+            {% block card_header %}{% endblock card_header %}
+          </div>
+          <div class="card-body">
+            {% block card_body %}
+              {% if form.errors %}
+                {% for field in form %}
+                  {% for error in field.errors %}
+                    <div class="alert alert-danger">
+                      {{ error|escape }}
+                    </div>
+                  {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                  <div class="alert alert-danger">
+                    {{ error|escape }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+
+              <div class="container">
+                <form method="post"
+                      action="{% block action %}{% endblock action %}">
+                  {% csrf_token %}
+
+                  {% for field in form %}
+                    <div class="form-group"
+                        {% if field.field.required %}
+                         aria-required="true"
+                        {% else %}
+                         aria-required="false"
+                        {% endif %}
+                    >
+                      <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                        {% if field.field.required %}
+                          <span class="required text-danger">*</span>
+                        {% endif %}
+                      </label>
+                      <div>
+                        {{ field|addclass:'form-control' }}
+                        {% if field.help_text %}
+                          <small id="{{ field.id_for_label }}-help"
+                                 class="form-text text-muted">
+                            {{ field.help_text|safe }}
+                          </small>
+                        {% endif %}
+                      </div>
+                    </div>
+                  {% endfor %}
+                  <div class="col-md-9 offset-md-6 pt-3">
+                    <button type="submit" class="btn btn-primary">
+                      {% block button_name %}{% endblock button_name %}
+                    </button>
+                    {% block link_more %}
+                    {% endblock link_more %}
+                  </div>
+                </form>
+              </div>
+            {% endblock card_body %}
+          </div> <!-- card body -->
+        </div> <!-- card -->
+      </div> <!-- col -->
+    </div> <!-- row -->
+  </div>
+</main>
+{% include 'includes/footer.html' %}
+</body>
+</html>

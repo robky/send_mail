@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock title %}
+{% block content %}
+  <div class="container py-5">
+    {% if users %}
+      <table class="table table-hover">
+        <thead>
+        <tr class="table-primary">
+          <th>Имя</th>
+          <th>Фамилия</th>
+          <th>Почта</th>
+          <th>Управление</th>
+        </tr>
+        </thead>
+        {% for user in users %}
+          <tr>
+            <td>
+              <a href="{% url 'core:user_detail' user.id %}"
+              >{{ user.name }}</a>
+            </td>
+            <td> {{ user.surname }} </td>
+            <td> {{ user.mail }} </td>
+            <td>
+              <a class="btn btn-warning"
+                 href="{% url 'core:user_edit' user.id %}"
+              >Редактировать</a>
+              <a class="btn btn-danger"
+                 href="{% url 'core:user_delete' user.id %}"
+              >Удалить</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </table>
+    {% else %}
+      Пользователей нет
+    {% endif %}
+    <p>
+      <a class="btn btn-primary"
+         href="{% url 'core:user_create' %}">Создать нового пользователя</a>
+    </p>
+  </div>
+{% endblock content %}

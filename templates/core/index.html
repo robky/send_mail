@@ -2,16 +2,22 @@
 {% block title %}{{ title }}{% endblock title %}
 {% block content %}
   <div class="container">
-    <h1>Отправка сообщений</h1>
-    <div class="row align-items-center">
-      <div class="col-12 col-md-6 gx-5">
-        <div class="my_text_indent">
-          <p>
-            Тест
-          </p>
+    <div class="row">
+      <h2 class="pt-lg-5">Добро пожаловать в сервис отправки рассылок.</h2>
+      <div class="col-12">
+        <div>
+          Вы можете создать новую рассылку, а можете использовать существующую.
+        </div>
+      </div>
+    </div>
+    <div class="row pt-2">
+      <div class="col-12">
+        <div>
+          <a class="btn btn-primary"
+             href="{% url 'core:mailing_table' %}">Рассылки</a>
         </div>
       </div>
     </div>
   </div>
-<p></p>
+  <p></p>
 {% endblock %}

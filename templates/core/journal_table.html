@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock title %}
+{% block content %}
+  <div class="container py-5">
+    {% if journal_stack %}
+      <table class="table table-hover">
+        <thead>
+        <tr class="table-primary">
+          <th>Пользователь</th>
+          <th>Дата открытия письма</th>
+        </tr>
+        </thead>
+        {% for info in journal_stack %}
+          <tr>
+            <td> {{ info.user }} </td>
+            <td>
+              {% if info.was_read %}
+                {{ info.was_read }}
+              {% else %}
+                Письмо еще не было открыто
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </table>
+    {% else %}
+      Информации нет.
+    {% endif %}
+    <p>
+      <a class="btn btn-primary"
+         href="{% url 'core:info_table' %}">Назад</a>
+    </p>
+  </div>
+{% endblock content %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock title %}
+{% block content %}
+  <div class="container py-5">
+    <div class="row">
+      <article class="col-12 col-md-9">
+        <p>
+          <strong>Название:</strong> {{ mailing.title }}
+        </p>
+        <p>
+          <strong>Описание:</strong> {{ mailing.description }}
+        </p>
+        <p>
+          <strong>Шаблон:</strong> {{ mailing.template }}
+        </p>
+        <a class="btn btn-info"
+           href="{% url 'core:mailing_table' %}">Назад</a>
+        <a class="btn btn-primary"
+           href="{% url 'core:mailing_edit' mailing.id %}">
+          Редактировать рассылку
+        </a>
+      </article>
+    </div>
+  </div>
+{% endblock content %}
