@@ -61,11 +61,11 @@ WSGI_APPLICATION = 'send_mail.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": os.getenv("ENGINE", "django.db.backends.sqlite3"),
-        "NAME": os.getenv("DATABASE", os.path.join(BASE_DIR, "db.sqlite3")),
-        "USER": os.getenv("USER", "user"),
-        "PASSWORD": os.getenv("PASSWORD", "password"),
-        "HOST": os.getenv("HOST", "localhost"),
-        "PORT": os.getenv("PORT", "5432"),
+        "NAME": os.getenv("POSTGRES_DB", os.path.join(BASE_DIR, "db.sqlite3")),
+        "USER": os.getenv("POSTGRES_USER", "user"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "password"),
+        "HOST": os.getenv("POSTGRES_SERVER", "localhost"),
+        "PORT": os.getenv("POSTGRES_PORT", "5432"),
     }, }
 
 
