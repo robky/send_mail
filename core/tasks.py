@@ -1,5 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 
+from datetime import timedelta
+
 from django.core.mail import send_mail
 from django.forms import model_to_dict
 
@@ -17,9 +19,9 @@ def add(x, y):
 
 @app.task
 def preparing_mailing(mailing_id, countdown, eta, url):
-    # deferred = False
-    # if eta or countdown:
-    #     deferred = True
+    deferred = False
+    if eta or countdown:
+        deferred = True
 
     mailing = Mailing.objects.get(id=mailing_id)
     subscribe_users = mailing.subscribe.all()
@@ -38,7 +40,19 @@ def preparing_mailing(mailing_id, countdown, eta, url):
         context = Context(model_to_dict(subscribe.user))
         rendered = template.render(context)
 
-        mailing_send(mailing.title, subscribe.user.mail, rendered)
+        if deferred:
+            if eta:
+                mailing_send.apply_async(
+                    mailing.title, subscribe.user.mail, rendered,
+                    eta=eta + timedelta(seconds=countdown)
+                )
+            else:
+                mailing_send.apply_async(
+                    mailing.title, subscribe.user.mail, rendered,
+                    countdown=countdown
+                )
+        else:
+            mailing_send.delay(mailing.title, subscribe.user.mail, rendered)
 
 
 @app.task

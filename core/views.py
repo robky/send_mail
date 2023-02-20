@@ -146,7 +146,7 @@ def mailing_send_form(request, mailing_id):
         countdown = form.cleaned_data['countdown']
         eta = form.cleaned_data['eta']
         url = request.build_absolute_uri(reverse('core:index'))
-        tasks.preparing_mailing(mailing_id, countdown, eta, url)
+        tasks.preparing_mailing.delay(mailing_id, countdown, eta, url)
         return redirect('/done/')
     template = 'core/mailing_send.html'
     title = 'Планирование отправки рассылки'
