@@ -6,6 +6,11 @@ services:
       - db_data:/var/lib/postgresql/data/
     env_file:
       - .env
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $${DATABASE} -U $${USER}" ]
+      interval: 1s
+      timeout: 3s
+      retries: 10
 
   web:
     build: .
@@ -21,6 +26,8 @@ services:
       timeout: 5s
       retries: 10
     depends_on:
+      db:
+        condition: service_healthy
       redis:
         condition: service_healthy
     env_file:
@@ -31,6 +38,8 @@ services:
     restart: always
     command: celery -A send_mail.celery_app worker -l info
     depends_on:
+      db:
+        condition: service_healthy
       redis:
         condition: service_healthy
     env_file:
