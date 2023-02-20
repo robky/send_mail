@@ -59,11 +59,14 @@ TEMPLATES = [
 WSGI_APPLICATION = 'send_mail.wsgi.application'
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+    "default": {
+        "ENGINE": os.getenv("ENGINE", "django.db.backends.sqlite3"),
+        "NAME": os.getenv("DATABASE", os.path.join(BASE_DIR, "db.sqlite3")),
+        "USER": os.getenv("USER", "user"),
+        "PASSWORD": os.getenv("PASSWORD", "password"),
+        "HOST": os.getenv("HOST", "localhost"),
+        "PORT": os.getenv("PORT", "5432"),
+    }, }
 
 
 AUTH_PASSWORD_VALIDATORS = [
