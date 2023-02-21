@@ -44,11 +44,14 @@ def preparing_mailing(mailing_id, countdown, eta, url):
             if eta:
                 print(type(eta))
                 print(eta)
-                # eta += timedelta(seconds=countdown)
-                eta = datetime.utcnow() + timedelta(seconds=20)
+                if isinstance(eta, unicode):
+                    eta = datetime.strptime(eta, "%Y-%m-%dT%H:%M:%SZ")
+                print(type(eta))
+                print(eta)
+
                 mailing_send.apply_async(
                     (mailing.title, subscribe.user.mail, rendered),
-                    eta=eta
+                    eta=eta + timedelta(seconds=countdown)
                 )
             else:
                 mailing_send.apply_async(
