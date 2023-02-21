@@ -43,6 +43,7 @@ def preparing_mailing(mailing_id, countdown, eta, url):
         if deferred:
             if eta:
                 print(type(eta))
+                print(eta)
                 # eta += timedelta(seconds=countdown)
                 eta = datetime.utcnow() + timedelta(seconds=20)
                 mailing_send.apply_async(
