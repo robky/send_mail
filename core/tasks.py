@@ -1,6 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from django.core.mail import send_mail
 from django.forms import model_to_dict
@@ -43,6 +43,7 @@ def preparing_mailing(mailing_id, countdown, eta, url):
         if deferred:
             if eta:
                 print(type(eta))
+                eta = datetime(eta)
                 eta += timedelta(seconds=countdown)
                 mailing_send.apply_async(
                     (mailing.title, subscribe.user.mail, rendered),
