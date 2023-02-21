@@ -7,7 +7,7 @@ app_name = 'core'
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^done/$', views.done, name='done'),
-    url(r'^info/(?P<uuid_string>[\w\-]+)/$', views.info, name='info'),
+    url(r'^info/(?P<uuid_string>[\w\-]+).gif$', views.info, name='info'),
     url(r'^journals/$', views.info_table, name='info_table'),
     url(r'^journals/(?P<info_id>\d+)/$', views.journal_table,
         name='journal_table'),

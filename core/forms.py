@@ -22,7 +22,6 @@ class SendMailForm(forms.Form):
         help_text=("Если требуется отсрочка отправки укажите время в секундах."
                    " Если не указано, то отправка без отсрочки."),
         min_value=0,
-        # initial=0,
         widget=forms.TextInput(attrs={'placeholder': 0}),
         required=False
     )

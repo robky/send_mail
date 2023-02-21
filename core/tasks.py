@@ -35,7 +35,7 @@ def preparing_mailing(mailing_id, countdown, eta, url):
             info=info,
             user=subscribe.user,
         )
-        img_url = "{}info/{}/".format(url, uuid_string)
+        img_url = "{}info/{}.gif".format(url, uuid_string)
         img_track = '\n<img src="{}" height="1px" width="1px">'.format(img_url)
         template = Template(mailing.template + img_track)
         context = Context(model_to_dict(subscribe.user))
@@ -45,12 +45,8 @@ def preparing_mailing(mailing_id, countdown, eta, url):
             if countdown is None:
                 countdown = 0
             if eta:
-                print(type(eta))
-                print(eta)
                 if isinstance(eta, unicode):
                     eta = parser.parse(eta)
-                print(type(eta))
-                print(eta)
 
                 mailing_send.apply_async(
                     (mailing.title, subscribe.user.mail, rendered),
