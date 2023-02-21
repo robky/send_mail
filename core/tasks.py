@@ -1,6 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 
 from datetime import datetime, timedelta
+from dateutil import parser
 
 from django.core.mail import send_mail
 from django.forms import model_to_dict
@@ -41,11 +42,13 @@ def preparing_mailing(mailing_id, countdown, eta, url):
         rendered = template.render(context)
 
         if deferred:
+            if countdown is None:
+                countdown = 0
             if eta:
                 print(type(eta))
                 print(eta)
                 if isinstance(eta, unicode):
-                    eta = datetime.strptime(eta, "%Y-%m-%dT%H:%M:%SZ")
+                    eta = parser.parse(eta)
                 print(type(eta))
                 print(eta)
 
