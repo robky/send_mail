@@ -43,12 +43,12 @@ def preparing_mailing(mailing_id, countdown, eta, url):
         if deferred:
             if eta:
                 mailing_send.apply_async(
-                    mailing.title, subscribe.user.mail, rendered,
+                    (mailing.title, subscribe.user.mail, rendered),
                     eta=eta + timedelta(seconds=countdown)
                 )
             else:
                 mailing_send.apply_async(
-                    mailing.title, subscribe.user.mail, rendered,
+                    (mailing.title, subscribe.user.mail, rendered),
                     countdown=countdown
                 )
         else:
