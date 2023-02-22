@@ -1,21 +1,16 @@
 from __future__ import absolute_import, unicode_literals
 
-from datetime import datetime, timedelta
-from dateutil import parser
+from datetime import timedelta
+from uuid import uuid4
 
+from dateutil import parser
 from django.core.mail import send_mail
 from django.forms import model_to_dict
-
-from mailing.models import Mailing, Info, Journal
-from send_mail import settings
-from send_mail.celery import app
-from uuid import uuid4
 from django.template import Context, Template
 
-
-@app.task
-def add(x, y):
-    return x + y
+from mailing.models import Info, Journal, Mailing
+from send_mail import settings
+from send_mail.celery import app
 
 
 @app.task

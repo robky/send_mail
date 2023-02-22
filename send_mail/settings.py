@@ -2,9 +2,6 @@ import os
 
 from dotenv import load_dotenv
 
-import core.apps
-import mailing.apps
-
 dotenv_path = os.path.join(os.path.dirname(__file__), "../.env")
 if os.path.exists(dotenv_path):
     load_dotenv(dotenv_path)

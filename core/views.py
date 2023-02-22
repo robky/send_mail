@@ -1,21 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from datetime import datetime
 from uuid import uuid4
 
-from django.core.mail import EmailMultiAlternatives, send_mail
-from django.core.paginator import Paginator
-from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render, redirect, get_object_or_404
-
-from django.template.loader import get_template, render_to_string
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-
-from core import tasks, forms
-from core.tasks import mailing_send
-from mailing.models import Mailing, User, Subscribe, Info, Journal
 from django.utils import timezone
+
+from core import forms, tasks
+from mailing.models import Info, Journal, Mailing, Subscribe, User
 
 LIMIT_COUNT_PAGINATOR = 7
 ONE_PIXEL_DATA = """R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7
@@ -153,7 +147,7 @@ def mailing_send_form(request, mailing_id):
     context = {
         'title': title,
         'form': form,
-        'mailing_id': mailing_id,
+        'mailing_id': mailing.id,
     }
     return render(request, template, context)
 

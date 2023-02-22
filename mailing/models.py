@@ -46,7 +46,8 @@ class User(models.Model):
     )
 
     def __str__(self):
-        return "{} {} ({})".format(self.name, self.surname, self.mail).encode('utf-8')
+        return "{} {} ({})".format(
+            self.name, self.surname, self.mail).encode('utf-8')
 
 
 class Subscribe(models.Model):

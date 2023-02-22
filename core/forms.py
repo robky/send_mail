@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
+
 from django import forms
+
 from mailing import models
 
 
