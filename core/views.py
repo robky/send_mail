@@ -120,7 +120,7 @@ def mailing_users(request, mailing_id):
 def mailing_send_form(request, mailing_id):
     mailing = get_object_or_404(Mailing, id=mailing_id)
     form = forms.SendMailForm(request.POST or None)
-    if form.is_valid() and request.is_ajax():
+    if form.is_valid() and request.is_():
         countdown = form.cleaned_data['countdown']
         eta = form.cleaned_data['eta']
         url = request.build_absolute_uri(reverse('core:index'))
