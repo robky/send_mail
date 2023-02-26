@@ -83,3 +83,8 @@ docker-compose up -d
 
 - Проект будет доступен на 80 порту.
 - Flower будет доступен на 9000 порту.
+
+Если отсутствуют статические файлы, то выполнить
+```
+docker-compose exec web python manage.py collectstatic --no-input
+```
