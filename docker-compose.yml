@@ -17,12 +17,9 @@ services:
     restart: always
     command: >
       sh -c "python manage.py migrate &&
-             gunicorn send_mail.wsgi 0.0.0.0:8000"
-    healthcheck:
-      test: celery -A send_mail.celery_app status
-      interval: 3s
-      timeout: 5s
-      retries: 10
+             gunicorn -b 0.0.0.0:8000 send_mail.wsgi"
+    volumes:
+      - static_value:/app/static/
     depends_on:
       db:
         condition: service_healthy
@@ -40,8 +37,7 @@ services:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - static_value:/var/html/static/
     depends_on:
-      web:
-        condition: service_healthy
+      - web
 
   worker:
     build: .
