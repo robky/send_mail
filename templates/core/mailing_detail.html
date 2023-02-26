@@ -1,25 +1,30 @@
-{% extends 'base.html' %}
-{% block title %}{{ title }}{% endblock title %}
-{% block content %}
-  <div class="container py-5">
-    <div class="row">
-      <article class="col-12 col-md-9">
-        <p>
-          <strong>Название:</strong> {{ mailing.title }}
-        </p>
-        <p>
-          <strong>Описание:</strong> {{ mailing.description }}
-        </p>
-        <p>
-          <strong>Шаблон:</strong> {{ mailing.template }}
-        </p>
-        <a class="btn btn-info"
-           href="{% url 'core:mailing_table' %}">Назад</a>
-        <a class="btn btn-primary"
-           href="{% url 'core:mailing_edit' mailing.id %}">
-          Редактировать рассылку
-        </a>
-      </article>
-    </div>
+<form method="post" action="">
+  {% csrf_token %}
+
+  <div class="modal-header">
+    <h3 class="modal-title">Рассылка</h3>
+    <button type="button" class="close" data-bs-dismiss="modal"
+            aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
   </div>
-{% endblock content %}
+
+  <div class="modal-body">
+    <p>
+      <strong>Название:</strong> {{ mailing.title }}
+    </p>
+    <p>
+      <strong>Описание:</strong> {{ mailing.description }}
+    </p>
+    <p>
+      <strong>Шаблон:</strong> {{ mailing.template }}
+    </p>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-bs-dismiss="modal">
+      Закрыть
+    </button>
+  </div>
+
+</form>

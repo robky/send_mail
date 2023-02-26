@@ -5,9 +5,10 @@
     {% if info_stack %}
       <table class="table table-hover">
         <thead>
-        <tr class="table-primary">
+        <tr class="table-primary text-center">
           <th>Название рассылки</th>
           <th>Дата задания</th>
+          <th>Планируемое время</th>
           <th>Отслеживание открытий писем</th>
         </tr>
         </thead>
@@ -17,10 +18,19 @@
               <a href="{% url 'core:journal_table' info.id %}"
               >{{ info.mailing }}</a>
             </td>
-          <td> {{ info.created }} </td>
-          <td>
-              <a class="btn btn-primary" href="{% url 'core:journal_table' info.id %}"
-              >Отслеживание</a>
+            <td class="text-center"> {{ info.created|date:"d E Y H:i:s" }} </td>
+            <td class="text-center"> {{ info.time_planned_send|date:"d E Y H:i:s" }} </td>
+            <td class="text-center">
+              {% if now_time > info.time_planned_send %}
+              <button type="button"
+                      class="mailing-info bs-modal btn btn-sm btn-primary"
+                      data-form-url="{% url 'core:journal_table' info.id %}"
+              >
+                Отслеживание
+              </button>
+                {% else %}
+                Еще не отправлено
+              {% endif %}
             </td>
           </tr>
         {% endfor %}
@@ -28,5 +38,21 @@
     {% else %}
       Пока не было рассылок. Информация появиться после отправки рассылки.
     {% endif %}
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
+      </div>
+    </div>
+
   </div>
+
+  <script type="text/javascript">
+      $(document).ready(function () {
+          $(".mailing-info").each(function () {
+              $(this).modalForm({formURL: $(this).data("form-url")});
+          });
+      });
+  </script>
+
 {% endblock content %}

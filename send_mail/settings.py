@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core.apps.CoreConfig',
     'mailing.apps.MailingConfig',
+    'bootstrap_modal_forms',
 ]
 
 MIDDLEWARE = [

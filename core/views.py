@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from uuid import uuid4
-
+from bootstrap_modal_forms import generic
+from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 
 from core import forms, tasks
 from mailing.models import Info, Journal, Mailing, Subscribe, User
 
-LIMIT_COUNT_PAGINATOR = 7
 ONE_PIXEL_DATA = """R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7
 """.strip().decode('base64')
 
@@ -19,7 +18,6 @@ ONE_PIXEL_DATA = """R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7
 def index(request):
     template = 'core/index.html'
     title = 'Отправка почтовых сообщений'
-    title = str(uuid4())
     context = {
         'title': title,
     }
@@ -29,7 +27,7 @@ def index(request):
 def mailing_table(request):
     template = "core/mailing_table.html"
     title = "Рассылки"
-    mailings = Mailing.objects.all()
+    mailings = Mailing.objects.prefetch_related('subscribe')
 
     context = {
         'title': title,
@@ -38,65 +36,47 @@ def mailing_table(request):
     return render(request, template, context)
 
 
-def mailing_detail(request, mailing_id):
-    template = "core/mailing_detail.html"
-    title = "Рассылка"
-    mailing = get_object_or_404(Mailing.objects, id=mailing_id)
-
-    context = {
-        "title": title,
-        "mailing": mailing,
-    }
-    return render(request, template, context)
+class MailingDetailView(generic.BSModalReadView):
+    model = Mailing
+    template_name = 'core/mailing_detail.html'
+    success_url = reverse_lazy('core:mailing_table')
 
 
-def mailing_create(request):
-    form = forms.CreateMailingForm(request.POST or None)
-    if form.is_valid():
-        form.save()
-        return redirect('/mailings/')
-    template = 'core/mailing_create.html'
-    title = 'Добавить рассылку'
-    context = {
-        'title': title,
-        'form': form,
-    }
-    return render(request, template, context)
+class MailingCreateView(generic.BSModalCreateView):
+    template_name = 'core/mailing_create.html'
+    form_class = forms.MailingModelForm
+    success_message = 'Рассылка успешно создана.'
+    success_url = reverse_lazy('core:mailing_table')
 
 
-def mailing_delete(request, mailing_id):
-    mailing = get_object_or_404(Mailing, id=mailing_id)
-    mailing.delete()
-    return redirect('/mailings/')
+class MailingDeleteView(generic.BSModalDeleteView):
+    model = Mailing
+    template_name = 'core/mailing_delete.html'
+    success_message = 'Рассылка удалена.'
+    success_url = reverse_lazy('core:mailing_table')
 
 
-def mailing_edit(request, mailing_id):
-    template = 'core/mailing_create.html'
-    mailing = get_object_or_404(Mailing, id=mailing_id)
-    form = forms.CreateMailingForm(
-        request.POST or None,
-        instance=mailing
-    )
-    if form.is_valid():
-        form.save()
-        return redirect('/mailings/')
-    context = {
-        'form': form,
-        'is_edit': True,
-        'mailing_id': mailing_id,
-    }
-    return render(request, template, context)
+class MailingUpdateView(generic.BSModalUpdateView):
+    model = Mailing
+    template_name = 'core/mailing_create.html'
+    form_class = forms.MailingModelForm
+    success_message = 'Рассылка успешно изменена.'
+    success_url = reverse_lazy('core:mailing_table')
+
+    def get_context_data(self, **kwargs):
+        context = super(MailingUpdateView, self).get_context_data(**kwargs)
+        context["is_edit"] = True
+        return context
 
 
 def mailing_subscribe(request, mailing_id):
     template = "core/mailing_subscribe.html"
-    title = "Добавить подписчика в рассылку"
     mailing = get_object_or_404(Mailing.objects, id=mailing_id)
     subscribe_users = mailing.subscribe.all()
-    unsubscribe_users = User.objects.exclude(id__in=subscribe_users)
+    unsubscribe_users = User.objects.exclude(
+        subscriber__in=subscribe_users)
 
     context = {
-        "title": title,
         "mailing_id": mailing_id,
         "unsubscribe_users": unsubscribe_users,
     }
@@ -108,7 +88,10 @@ def mailing_subscribe_user(request, mailing_id, user_id):
     user = get_object_or_404(User, id=user_id)
     if not mailing.subscribe.filter(user=user).exists():
         Subscribe.objects.create(mailing=mailing, user=user)
-    return redirect('/mailings/{}/users/'.format(mailing_id))
+    message = 'Пользователь {} успешно подписан на рассылку {}'.encode(
+        'utf-8').format(user, mailing)
+    messages.success(request, message)
+    return redirect('/mailings/')
 
 
 def mailing_unsubscribe_user(request, mailing_id, user_id):
@@ -116,17 +99,18 @@ def mailing_unsubscribe_user(request, mailing_id, user_id):
     user = get_object_or_404(User, id=user_id)
     subscribe = get_object_or_404(Subscribe, mailing=mailing, user=user)
     subscribe.delete()
-    return redirect('/mailings/{}/users/'.format(mailing_id))
+    message = 'Пользователь {} успешно отписан от рассылки {}'.encode(
+        'utf-8').format(user, mailing)
+    messages.success(request, message)
+    return redirect('/mailings/')
 
 
 def mailing_users(request, mailing_id):
     template = "core/mailing_users.html"
-    title = "Управление пользователями в рассылке"
     mailing = get_object_or_404(Mailing.objects, id=mailing_id)
     subscribe = mailing.subscribe.all()
 
     context = {
-        "title": title,
         "mailing_id": mailing_id,
         "subscribe": subscribe,
     }
@@ -136,16 +120,23 @@ def mailing_users(request, mailing_id):
 def mailing_send_form(request, mailing_id):
     mailing = get_object_or_404(Mailing, id=mailing_id)
     form = forms.SendMailForm(request.POST or None)
-    if form.is_valid():
+    if form.is_valid() and request.is_ajax():
         countdown = form.cleaned_data['countdown']
         eta = form.cleaned_data['eta']
         url = request.build_absolute_uri(reverse('core:index'))
         tasks.preparing_mailing.delay(mailing_id, countdown, eta, url)
-        return redirect('/done/')
+        messages.success(
+            request,
+            ('Задание на рассылку сформировано. Рассылка будет отправлена '
+             'согласно указанным временным настройкам.')
+        )
+        message = 'Отслеживать рассылку можно в журнале отправленных рассылок'
+        messages.info(request, message)
+        return redirect('/mailings/')
+    if form.is_valid():
+        return redirect('/mailings/')
     template = 'core/mailing_send.html'
-    title = 'Планирование отправки рассылки'
     context = {
-        'title': title,
         'form': form,
         'mailing_id': mailing.id,
     }
@@ -164,64 +155,49 @@ def user_table(request):
     return render(request, template, context)
 
 
-def user_detail(request, user_id):
-    template = "core/user_detail.html"
-    title = "Пользователь"
-    user = get_object_or_404(User.objects, id=user_id)
-
-    context = {
-        "title": title,
-        "user": user,
-    }
-    return render(request, template, context)
+class UserCreateView(generic.BSModalCreateView):
+    template_name = 'core/user_create.html'
+    form_class = forms.UserModelForm
+    success_message = 'Пользователь успешно создан.'
+    success_url = reverse_lazy('core:user_table')
 
 
-def user_create(request):
-    form = forms.CreateUserForm(request.POST or None)
-    if form.is_valid():
-        form.save()
-        return redirect('/users/')
-    template = 'core/user_create.html'
-    title = 'Добавить пользователя'
-    context = {
-        'title': title,
-        'form': form,
-    }
-    return render(request, template, context)
+class UserUpdateView(generic.BSModalUpdateView):
+    model = User
+    template_name = 'core/user_create.html'
+    form_class = forms.UserModelForm
+    success_message = 'Пользователь успешно изменен.'
+    success_url = reverse_lazy('core:user_table')
+
+    def get_context_data(self, **kwargs):
+        context = super(UserUpdateView, self).get_context_data(**kwargs)
+        context["is_edit"] = True
+        return context
 
 
-def user_delete(request, user_id):
-    user = get_object_or_404(User, id=user_id)
-    user.delete()
-    return redirect('/users/')
+class UserDetailView(generic.BSModalReadView):
+    model = User
+    template_name = 'core/user_detail.html'
+    success_url = reverse_lazy('core:user_table')
 
 
-def user_edit(request, user_id):
-    template = 'core/user_create.html'
-    user = get_object_or_404(User, id=user_id)
-    form = forms.CreateUserForm(
-        request.POST or None,
-        instance=user
-    )
-    if form.is_valid():
-        form.save()
-        return redirect('/users/')
-    context = {
-        'form': form,
-        'is_edit': True,
-        'user_id': user_id,
-    }
-    return render(request, template, context)
+class UserDeleteView(generic.BSModalDeleteView):
+    model = User
+    template_name = 'core/user_delete.html'
+    success_message = 'Пользователь удален.'
+    success_url = reverse_lazy('core:user_table')
 
 
 def info_table(request):
     template = "core/info_table.html"
     title = "Журнал рассылок"
     info_stack = Info.objects.all()
+    now_time = timezone.now()
 
     context = {
         'title': title,
         'info_stack': info_stack,
+        'now_time': now_time,
     }
     return render(request, template, context)
 

@@ -5,35 +5,107 @@
     {% if mailings %}
       <table class="table table-hover">
         <thead>
-        <tr class="table-primary">
+        <tr class="table-primary text-center">
           <th>Название</th>
+          <th>Подписчиков</th>
           <th>Управление</th>
         </tr>
         </thead>
         {% for mailing in mailings %}
-          <tr>
-            <td>
-              <a href="{% url 'core:mailing_detail' mailing.id %}"
-              >{{ mailing.title }}</a>
-            </td>
-            <td>
-              <a class="btn btn-warning" href="{% url 'core:mailing_edit' mailing.id %}"
-              >Редактировать</a>
-              <a class="btn btn-primary" href="{% url 'core:mailing_users' mailing.id %}"
-              >Подписчики</a>
-              <a class="btn btn-success" href="{% url 'core:mailing_send_form' mailing.id %}"
-              >Разослать</a>
-              <a class="btn btn-danger" href="{% url 'core:mailing_delete' mailing.id %}"
-              >Удалить</a>
-            </td>
-          </tr>
+          {% with user_count=mailing.subscribe.count %}
+            <tr>
+              <td>
+                <a href="#"
+                   class="detail-mailing bs-modal"
+                   data-form-url="{% url 'core:mailing_detail' mailing.id %}"
+                >
+                  {{ mailing.title }}
+                </a>
+              </td>
+              <td class="text-center">
+                {{ user_count }}
+              </td>
+              <td class="text-center">
+                <button type="button"
+                        class="update-mailing bs-modal btn btn-sm btn-warning"
+                        data-form-url="{% url 'core:mailing_edit' mailing.id %}"
+                >
+                  Редактировать
+                </button>
+                <button type="button"
+                        class="mailing-users bs-modal btn btn-sm btn-primary
+                          {% if not user_count %}disabled{% endif %}"
+                        data-form-url="{% url 'core:mailing_users' mailing.id %}"
+                >
+                  Подписчики
+                </button>
+                <button type="button"
+                        class="mailing-users-subscribe bs-modal btn btn-sm btn-primary"
+                        data-form-url="{% url 'core:mailing_subscribe' mailing.id %}"
+                >
+                  Добавить подписчиков
+                </button>
+                <button type="button"
+                        class="mailing-send bs-modal btn btn-sm btn-success
+                          {% if not user_count %}disabled{% endif %}"
+                        data-form-url="{% url 'core:mailing_send_form' mailing.id %}"
+                >
+                  Разослать
+                </button>
+                <button type="button"
+                        class="delete-mailing bs-modal btn btn-sm btn-danger"
+                        data-form-url="{% url 'core:mailing_delete' mailing.id %}"
+                >
+                  Удалить
+                </button>
+              </td>
+            </tr>
+          {% endwith %}
         {% endfor %}
       </table>
     {% else %}
       Рассылок нет
     {% endif %}
-    <p>
-      <a class="btn btn-primary"
-         href="{% url 'core:mailing_create' %}">Создать новую рассылку</a></p>
+
+    <button id="create_mailing" class="btn btn-primary" type="button"
+            name="button">
+      Создать новую рассылку
+    </button>
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
+      </div>
+    </div>
+
   </div>
+
+  <script type="text/javascript">
+      $(document).ready(function () {
+          $("#create_mailing").modalForm({
+              formURL: "{% url 'core:mailing_create' %}"
+          });
+          $(".detail-mailing").each(function () {
+              $(this).modalForm({formURL: $(this).data("form-url")});
+          });
+          $(".update-mailing").each(function () {
+              $(this).modalForm({formURL: $(this).data("form-url")});
+          });
+          $(".delete-mailing").each(function () {
+              $(this).modalForm({formURL: $(this).data("form-url")});
+          });
+          $(".mailing-users").each(function () {
+              $(this).modalForm({formURL: $(this).data("form-url")});
+          });
+          $(".mailing-users-subscribe").each(function () {
+              $(this).modalForm({formURL: $(this).data("form-url")});
+          });
+          $(".mailing-send").each(function () {
+              $(this).modalForm({formURL: $(this).data("form-url")});
+          });
+      });
+
+
+  </script>
+
 {% endblock content %}

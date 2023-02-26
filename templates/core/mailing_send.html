@@ -1,11 +1,7 @@
-{% extends 'base_form.html' %}
-{% block title %}Добавить рассылку{% endblock title %}
+{% extends 'base_form_model.html' %}
 {% block card_header %}
-    Запланировать рассылку
+  Запланировать рассылку
 {% endblock card_header %}
-{% block action %}
-    {% url 'core:mailing_send_form' mailing_id %}
-{% endblock action %}
 {% block button_name %}
-    Отправить
+  Старт
 {% endblock button_name %}

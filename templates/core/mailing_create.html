@@ -1,5 +1,4 @@
-{% extends 'base_form.html' %}
-{% block title %}Добавить рассылку{% endblock title %}
+{% extends 'base_form_model.html' %}
 {% block card_header %}
   {% if is_edit %}
     Редактировать рассылку
@@ -7,13 +6,6 @@
     Создать новую рассылку
   {% endif %}
 {% endblock card_header %}
-{% block action %}
-  {% if is_edit %}
-    {% url 'core:mailing_edit' mailing_id %}
-  {% else %}
-    {% url 'core:mailing_create' %}
-  {% endif %}
-{% endblock action %}
 {% block button_name %}
   {% if is_edit %}
     Изменить

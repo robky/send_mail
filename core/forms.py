@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 
+from bootstrap_modal_forms.forms import BSModalModelForm
 from django import forms
 
 from mailing import models
 
 
-class CreateUserForm(forms.ModelForm):
+class UserModelForm(BSModalModelForm):
     class Meta:
         model = models.User
         fields = '__all__'
 
 
-class CreateMailingForm(forms.ModelForm):
+class MailingModelForm(BSModalModelForm):
     class Meta:
         model = models.Mailing
         fields = '__all__'
@@ -27,13 +28,12 @@ class SendMailForm(forms.Form):
         widget=forms.TextInput(attrs={'placeholder': 0}),
         required=False
     )
-    now = datetime.now().strftime("%d.%m.%Y %H:%M")
+    now = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
     eta = forms.DateTimeField(
         label="Дата и время отправки",
         help_text=("Отправка будет осуществлена не раньше указанного времени."
                    "Если не указано или указано время в прошлом, то отправка "
                    "текущим временем."),
-        input_formats=['%d.%m.%Y %H:%M'],
         widget=forms.TextInput(attrs={'placeholder': now}),
         required=False
     )

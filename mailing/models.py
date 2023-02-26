@@ -70,6 +70,7 @@ class Info(models.Model):
         related_name='info'
     )
     created = models.DateTimeField(auto_now_add=True)
+    time_planned_send = models.DateTimeField()
 
 
 class Journal(models.Model):

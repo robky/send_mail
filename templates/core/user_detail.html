@@ -1,26 +1,33 @@
-{% extends 'base.html' %}
-{% block title %}{{ title }}{% endblock title %}
-{% block content %}
-  <div class="container py-5">
-    <div class="row">
-      <article class="col-12 col-md-9">
-        <p>
-          <strong>Имя:</strong> {{ user.name }}
-        </p>
-        <p>
-          <strong>Фамилия:</strong> {{ user.surname }}
-        </p>
-        <p>
-          <strong>Почта:</strong> {{ user.mail }}
-        </p>
-        <p>
-          <strong>День рождения:</strong> {{ user.birthday }}
-        </p>
-          <a class="btn btn-primary"
-             href="{% url 'core:user_edit' user.id %}">
-            Редактировать пользователя
-          </a>
-      </article>
-    </div>
+<form method="post" action="">
+  {% csrf_token %}
+
+  <div class="modal-header">
+    <h3 class="modal-title">Пользователь</h3>
+    <button type="button" class="close" data-bs-dismiss="modal"
+            aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
   </div>
-{% endblock content %}
+
+  <div class="modal-body">
+    <p>
+      <strong>Имя:</strong> {{ user.name }}
+    </p>
+    <p>
+      <strong>Фамилия:</strong> {{ user.surname }}
+    </p>
+    <p>
+      <strong>Почта:</strong> {{ user.mail }}
+    </p>
+    <p>
+      <strong>День рождения:</strong> {{ user.birthday }}
+    </p>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-bs-dismiss="modal">
+      Закрыть
+    </button>
+  </div>
+
+</form>

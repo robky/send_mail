@@ -1,5 +1,4 @@
-{% extends 'base_form.html' %}
-{% block title %}Добавить пользователя{% endblock title %}
+{% extends 'base_form_model.html' %}
 {% block card_header %}
   {% if is_edit %}
     Редактировать пользователя
@@ -7,13 +6,6 @@
     Создать нового пользователя
   {% endif %}
 {% endblock card_header %}
-{% block action %}
-  {% if is_edit %}
-    {% url 'core:user_edit' user_id %}
-  {% else %}
-    {% url 'core:user_create' %}
-  {% endif %}
-{% endblock action %}
 {% block button_name %}
   {% if is_edit %}
     Изменить

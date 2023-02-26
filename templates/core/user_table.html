@@ -5,28 +5,34 @@
     {% if users %}
       <table class="table table-hover">
         <thead>
-        <tr class="table-primary">
-          <th>Имя</th>
-          <th>Фамилия</th>
-          <th>Почта</th>
+        <tr class="table-primary text-center">
+          <th>Пользователь</th>
           <th>Управление</th>
         </tr>
         </thead>
         {% for user in users %}
           <tr>
             <td>
-              <a href="{% url 'core:user_detail' user.id %}"
-              >{{ user.name }}</a>
+              <a href="#"
+                      class="detail-user bs-modal"
+                      data-form-url="{% url 'core:user_detail' user.id %}"
+              >
+                {{ user }}
+              </a>
             </td>
-            <td> {{ user.surname }} </td>
-            <td> {{ user.mail }} </td>
-            <td>
-              <a class="btn btn-warning"
-                 href="{% url 'core:user_edit' user.id %}"
-              >Редактировать</a>
-              <a class="btn btn-danger"
-                 href="{% url 'core:user_delete' user.id %}"
-              >Удалить</a>
+            <td class="text-center">
+              <button type="button"
+                      class="update-user bs-modal btn btn-sm btn-primary"
+                      data-form-url="{% url 'core:user_edit' user.id %}"
+              >
+                Редактировать
+              </button>
+              <button type="button"
+                      class="delete-user bs-modal btn btn-sm btn-danger"
+                      data-form-url="{% url 'core:user_delete' user.id %}"
+              >
+                Удалить
+              </button>
             </td>
           </tr>
         {% endfor %}
@@ -34,9 +40,38 @@
     {% else %}
       Пользователей нет
     {% endif %}
-    <p>
-      <a class="btn btn-primary"
-         href="{% url 'core:user_create' %}">Создать нового пользователя</a>
-    </p>
+
+    <button id="create_user" class="btn btn-primary" type="button"
+            name="button">
+      Создать нового пользователя
+    </button>
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
+      </div>
+    </div>
+
   </div>
+
+  <script type="text/javascript">
+      $(document).ready(function () {
+          $("#create_user").modalForm({
+              formURL: "{% url 'core:user_create' %}"
+          });
+          $(".detail-user").each(function () {
+              $(this).modalForm({formURL: $(this).data("form-url")});
+          });
+          $(".update-user").each(function () {
+              $(this).modalForm({formURL: $(this).data("form-url")});
+          });
+          $(".delete-user").each(function () {
+              $(this).modalForm({
+                  formURL: $(this).data("form-url")
+              });
+          });
+      });
+
+
+  </script>
 {% endblock content %}

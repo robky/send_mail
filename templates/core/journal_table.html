@@ -1,11 +1,19 @@
-{% extends 'base.html' %}
-{% block title %}{{ title }}{% endblock title %}
-{% block content %}
-  <div class="container py-5">
+<form method="post" action="">
+  {% csrf_token %}
+
+  <div class="modal-header">
+    <h3 class="modal-title">Отслеживание</h3>
+    <button type="button" class="close" data-bs-dismiss="modal"
+            aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
     {% if journal_stack %}
       <table class="table table-hover">
         <thead>
-        <tr class="table-primary">
+        <tr class="table-primary text-center">
           <th>Пользователь</th>
           <th>Дата открытия письма</th>
         </tr>
@@ -26,9 +34,12 @@
     {% else %}
       Информации нет.
     {% endif %}
-    <p>
-      <a class="btn btn-primary"
-         href="{% url 'core:info_table' %}">Назад</a>
-    </p>
   </div>
-{% endblock content %}
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-bs-dismiss="modal">
+      Закрыть
+    </button>
+  </div>
+
+</form>

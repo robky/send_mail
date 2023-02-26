@@ -1,27 +1,31 @@
-{% extends 'base.html' %}
-{% block title %}{{ title }}{% endblock title %}
-{% block content %}
-  <div class="container py-5">
+<form method="post" action="">
+  {% csrf_token %}
+
+  <div class="modal-header">
+    <h3 class="modal-title">Подписчики</h3>
+    <button type="button" class="close" data-bs-dismiss="modal"
+            aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
     {% if subscribe %}
       <table class="table table-hover">
         <thead>
-        <tr class="table-primary">
-          <th>Имя</th>
-          <th>Фамилия</th>
-          <th>Почта</th>
+        <tr class="table-primary text-center">
+          <th>Пользователь</th>
           <th>Управление</th>
         </tr>
         </thead>
         {% for subscriber in subscribe %}
           <tr>
             <td>
-              <a href="{% url 'core:user_detail' subscriber.user.id %}"
-              >{{ subscriber.user.name }}</a>
+              {{ subscriber.user }}
             </td>
-            <td> {{ subscriber.user.surname }} </td>
-            <td> {{ subscriber.user.mail }} </td>
-            <td>
-              <a class="btn btn-danger" href="{% url 'core:mailing_unsubscribe_user' mailing_id subscriber.user.id %}"
+            <td class="text-center">
+              <a class="btn btn-danger"
+                 href="{% url 'core:mailing_unsubscribe_user' mailing_id subscriber.user.id %}"
               >Отписать</a>
             </td>
           </tr>
@@ -31,9 +35,12 @@
       <p>На рассылку никто не подписан.</p>
     {% endif %}
     <p>
-      <a class="btn btn-info"
-         href="{% url 'core:mailing_table' %}">Назад</a>
-      <a class="btn btn-primary"
-         href="{% url 'core:mailing_subscribe' mailing_id %}">Добавить подписчика</a></p>
   </div>
-{% endblock content %}
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-bs-dismiss="modal">
+      Закрыть
+    </button>
+  </div>
+
+</form>
